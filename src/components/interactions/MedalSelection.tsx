@@ -2,12 +2,12 @@ import React from 'react';
 import { medals } from '../../data/medals';
 import type { MedalDisplay } from '../../types';
 
-interface MedalSelectionProps {
+export interface MedalSelectionProps {
   selectedMedals: string[];
   onMedalToggle: (medalId: string) => void;
 }
 
-export function MedalSelection({ selectedMedals, onMedalToggle }: MedalSelectionProps) {
+export const MedalSelection = ({ selectedMedals, onMedalToggle }: MedalSelectionProps) => {
   return (
     <div>
       <label className="block text-sm font-medium mb-2 text-text-secondary">
@@ -30,4 +30,4 @@ export function MedalSelection({ selectedMedals, onMedalToggle }: MedalSelection
       </div>
     </div>
   );
-}
+};
