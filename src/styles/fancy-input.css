@@ -1,0 +1,75 @@
+.fancy-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.grid-background {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: linear-gradient(to right, #0f0f10 1px, transparent 1px),
+    linear-gradient(to bottom, #0f0f10 1px, transparent 1px);
+  background-size: 1rem 1rem;
+  background-position: center center;
+  z-index: -1;
+  filter: blur(1px);
+}
+
+.fancy-input {
+  background-color: #010201;
+  border: none;
+  width: 100%;
+  height: 56px;
+  border-radius: 10px;
+  color: white;
+  padding: 0 20px;
+  font-size: 18px;
+  position: relative;
+}
+
+.fancy-input::placeholder {
+  color: #c0b9c0;
+}
+
+.fancy-input:focus {
+  outline: none;
+}
+
+.glow-effect {
+  position: absolute;
+  inset: -2px;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.glow-effect::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from 0deg,
+    #402fb5,
+    #cf30aa,
+    #402fb5,
+    #cf30aa,
+    #402fb5
+  );
+  animation: rotate 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.fancy-input-container:hover .glow-effect::before,
+.fancy-input:focus + .glow-effect::before {
+  opacity: 1;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

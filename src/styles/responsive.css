@@ -1,0 +1,75 @@
+/* Base responsive styles */
+@layer base {
+  html {
+    @apply text-base;
+  }
+
+  @screen sm {
+    html {
+      @apply text-[14px];
+    }
+  }
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 768px) {
+  .container {
+    @apply px-4;
+  }
+
+  .grid-cols-3 {
+    @apply grid-cols-1;
+  }
+
+  .medal-card {
+    @apply aspect-[4/3];
+  }
+
+  .nav-link span {
+    @apply hidden;
+  }
+
+  .animated-background .shape {
+    @apply scale-75;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-link {
+    @apply p-2;
+  }
+
+  .medal-card {
+    @apply aspect-square;
+  }
+
+  .animated-background .shape {
+    @apply scale-50;
+  }
+
+  .batman-button {
+    @apply w-full max-w-[280px];
+  }
+
+  .fancy-input {
+    @apply text-base;
+  }
+
+  .modal-content {
+    @apply mx-2 max-w-[calc(100%-1rem)];
+  }
+}
+
+/* Touch-friendly adjustments */
+@media (hover: none) {
+  .nav-link, 
+  .batman-button,
+  .medal-card,
+  .animated-button {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .fancy-input {
+    @apply h-[44px];
+  }
+}

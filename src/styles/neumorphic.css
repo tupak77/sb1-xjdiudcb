@@ -1,0 +1,53 @@
+@layer components {
+  .neu-element {
+    @apply bg-neu-base rounded-2xl transition-all duration-300;
+    box-shadow: 8px 8px 16px var(--neu-shadow-dark),
+                -8px -8px 16px var(--neu-shadow-light);
+  }
+
+  .neu-pressed {
+    @apply bg-neu-base rounded-2xl transition-all duration-300;
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
+                inset -4px -4px 8px var(--neu-shadow-light);
+  }
+
+  .neu-button {
+    @apply relative overflow-hidden bg-neu-base rounded-2xl px-6 py-3 font-display font-semibold 
+           transition-all duration-300 hover:scale-105 active:scale-95;
+    box-shadow: 5px 5px 10px var(--neu-shadow-dark),
+                -5px -5px 10px var(--neu-shadow-light);
+  }
+
+  .neu-button:active {
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
+                inset -4px -4px 8px var(--neu-shadow-light);
+  }
+
+  .neu-card {
+    @apply bg-neu-base rounded-2xl p-6 transition-all duration-300;
+    box-shadow: 8px 8px 16px var(--neu-shadow-dark),
+                -8px -8px 16px var(--neu-shadow-light);
+  }
+
+  .neu-input {
+    @apply bg-neu-base rounded-xl px-4 py-2 w-full transition-all duration-300 text-text-primary;
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
+                inset -4px -4px 8px var(--neu-shadow-light);
+  }
+
+  .neu-select {
+    @apply bg-neu-base rounded-xl px-4 py-2 w-full appearance-none transition-all duration-300 text-text-primary;
+    box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
+                inset -4px -4px 8px var(--neu-shadow-light);
+  }
+
+  .neu-checkbox {
+    @apply appearance-none bg-neu-base rounded-lg w-6 h-6 transition-all duration-300 relative;
+    box-shadow: inset 2px 2px 4px var(--neu-shadow-dark),
+                inset -2px -2px 4px var(--neu-shadow-light);
+  }
+
+  .neu-checkbox:checked {
+    @apply bg-primary;
+  }
+}

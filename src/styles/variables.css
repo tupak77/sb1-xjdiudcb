@@ -1,0 +1,18 @@
+:root {
+  /* Base Colors */
+  --neu-base: #1a1b2e;
+  --neu-shadow-dark: rgba(13, 13, 22, 0.7);
+  --neu-shadow-light: rgba(45, 46, 77, 0.5);
+  
+  /* Brand Colors */
+  --primary: #4f46e5;
+  --accent: #7c3aed;
+  --gold: #fbbf24;
+  
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  
+  /* Transitions */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

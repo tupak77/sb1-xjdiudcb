@@ -1,0 +1,64 @@
+/* Medal options styling */
+.medal-option {
+  @apply bg-neu-base rounded-xl p-4 cursor-pointer transition-all duration-300;
+  box-shadow: 4px 4px 8px var(--neu-shadow-dark),
+              -4px -4px 8px var(--neu-shadow-light);
+}
+
+.medal-option:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 12px var(--neu-shadow-dark),
+              -6px -6px 12px var(--neu-shadow-light);
+}
+
+.medal-option.selected {
+  @apply bg-gradient-to-br from-primary/20 to-accent/20;
+  box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
+              inset -4px -4px 8px var(--neu-shadow-light);
+}
+
+.medal-icon {
+  @apply flex justify-center items-center mb-2 transition-transform duration-300 text-[#fbbf24];
+}
+
+.medal-option:hover .medal-icon {
+  transform: scale(1.1);
+}
+
+.medal-name {
+  @apply text-sm font-semibold text-center mb-1 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+}
+
+.medal-description {
+  @apply text-xs text-text-secondary text-center;
+  display: none;
+}
+
+.medal-option:hover .medal-description {
+  display: block;
+}
+
+/* Modal Animation */
+.modal-overlay {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,39 @@
+@import './styles/variables.css';
+@import './styles/neumorphic.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-neu-base text-text-primary font-body;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply neu-button flex items-center gap-2 text-text-secondary hover:text-primary;
+  }
+
+  .nav-link.active {
+    @apply text-primary neu-pressed;
+  }
+
+  .content-card {
+    @apply neu-card hover:scale-[1.02] transition-transform;
+  }
+
+  .gradient-button {
+    @apply neu-button bg-gradient-to-r from-primary to-accent text-neu-base 
+           hover:from-primary/90 hover:to-accent/90;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+  }
+}
