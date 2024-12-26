@@ -1,39 +1,49 @@
 import { create } from 'zustand';
-import type { ChatState } from '../types/chat';
+import type { ChatState, ChatMessage, ChatRoom, ChatParticipant, UserStatus } from '../types/chat';
 
-export const useChatStore = create<ChatState>((set) => ({
+interface ChatStore extends ChatState {
+  setActiveRoom: (roomId: string | null) => void;
+  addMessage: (roomId: string, message: ChatMessage) => void;
+  setRooms: (rooms: ChatRoom[]) => void;
+  setMessages: (roomId: string, messages: ChatMessage[]) => void;
+  setParticipants: (roomId: string, participants: ChatParticipant[]) => void;
+  updateUserStatus: (userId: string, status: UserStatus) => void;
+}
+
+export const useChatStore = create<ChatStore>((set) => ({
   activeRoom: null,
   rooms: [],
   messages: {},
   participants: {},
   userStatuses: {},
-  setActiveRoom: (roomId: string | null) => set({ activeRoom: roomId }),
-  addMessage: (roomId: string, message: ChatMessage) =>
+  setActiveRoom: (roomId) => set({ activeRoom: roomId }),
+  addMessage: (roomId, message) =>
     set((state) => ({
       messages: {
         ...state.messages,
-        [roomId]: [
-          ...(state.messages[roomId] || []).filter(m => m.id !== message.id),
-          message
-        ]
+        [roomId]: [...(state.messages[roomId] || []), message].sort(
+          (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        )
       }
     })),
-  setRooms: (rooms: ChatRoom[]) => set({ rooms }),
-  setMessages: (roomId: string, messages: ChatMessage[]) =>
+  setRooms: (rooms) => set({ rooms }),
+  setMessages: (roomId, messages) =>
     set((state) => ({
       messages: {
         ...state.messages,
-        [roomId]: messages
+        [roomId]: messages.sort(
+          (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        )
       }
     })),
-  setParticipants: (roomId: string, participants: ChatParticipant[]) =>
+  setParticipants: (roomId, participants) =>
     set((state) => ({
       participants: {
         ...state.participants,
         [roomId]: participants
       }
     })),
-  updateUserStatus: (userId: string, status: UserStatus) =>
+  updateUserStatus: (userId, status) =>
     set((state) => ({
       userStatuses: {
         ...state.userStatuses,

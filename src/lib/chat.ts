@@ -1,5 +1,4 @@
 import { supabase } from './supabase';
-import type { User } from '@supabase/supabase-js';
 import type { ChatMessage } from '../types/chat';
 
 export const chatService = {
@@ -35,7 +34,7 @@ export const chatService = {
   },
 
   subscribeToRoom(roomId: string, onMessage: (message: ChatMessage) => void) {
-    const channel = supabase
+    return supabase
       .channel(`room:${roomId}`)
       .on(
         'postgres_changes',
@@ -45,27 +44,19 @@ export const chatService = {
           table: 'chat_messages',
           filter: `room_id=eq.${roomId}`
         },
-        (payload) => {
-          const newMessage = payload.new as ChatMessage;
-          if (newMessage.sender) {
-            onMessage(newMessage);
-          } else {
-            // Fetch complete message data if sender info is missing
-            supabase
-              .from('chat_messages')
-              .select('*, sender:profiles!chat_messages_sender_id_fkey(id, name, avatar_url)')
-              .eq('id', newMessage.id)
-              .single()
-              .then(({ data, error }) => {
-                if (!error && data) {
-                  onMessage(data);
-                }
-              });
+        async (payload) => {
+          // Fetch complete message data including sender info
+          const { data, error } = await supabase
+            .from('chat_messages')
+            .select('*, sender:profiles!chat_messages_sender_id_fkey(id, name, avatar_url)')
+            .eq('id', payload.new.id)
+            .single();
+
+          if (!error && data) {
+            onMessage(data);
           }
         }
       )
       .subscribe();
-      
-    return channel;
   }
 };

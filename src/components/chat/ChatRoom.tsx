@@ -17,37 +17,37 @@ export function ChatRoom({ roomId, className = '' }: ChatRoomProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadMessages = async () => {
+    let subscription: any;
+
+    const initializeChat = async () => {
       try {
         setIsLoading(true);
         const messages = await chatService.getMessages(roomId);
         useChatStore.getState().setMessages(roomId, messages);
+        
+        // Subscribe to new messages
+        subscription = chatService.subscribeToRoom(roomId, (message) => {
+          useChatStore.getState().addMessage(roomId, message);
+        });
       } catch (error) {
-        console.error('Error loading messages:', error);
+        console.error('Error initializing chat:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadMessages();
-  }, [roomId]);
-
-  useEffect(() => {
-    const subscription = chatService.subscribeToRoom(roomId, (message) => {
-      useChatStore.getState().addMessage(roomId, message);
-    });
+    initializeChat();
 
     return () => {
-      subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     };
   }, [roomId]);
   
   useEffect(() => {
-    if (messages.length > 0) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length]);
-
 
   return (
     <div className={`flex flex-col ${className}`}>
@@ -59,38 +59,39 @@ export function ChatRoom({ roomId, className = '' }: ChatRoomProps) {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {isLoading && (
+        {isLoading ? (
           <div className="flex justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
-        )}
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex gap-3 ${
-              message.sender_id === currentUser?.id ? 'flex-row-reverse' : ''
-            }`}
-          >
-            <div className="w-8 h-8 rounded-full bg-neu-dark flex items-center justify-center flex-shrink-0">
-              <User className="w-4 h-4 text-text-secondary" />
-            </div>
+        ) : (
+          messages.map((message) => (
             <div
-              className={`max-w-[70%] p-3 rounded-xl ${
-                message.sender_id === currentUser?.id
-                  ? 'bg-primary/20 ml-auto'
-                  : 'bg-white/5'
+              key={message.id}
+              className={`flex gap-3 ${
+                message.sender_id === currentUser?.id ? 'flex-row-reverse' : ''
               }`}
             >
-              <p className="text-sm text-text-secondary">
-                {message.sender?.name || 'Usuario'}
-              </p>
-              <p className="mt-1">{message.content}</p>
-              <p className="text-xs text-text-secondary mt-1">
-                {new Date(message.created_at).toLocaleTimeString()}
-              </p>
+              <div className="w-8 h-8 rounded-full bg-neu-dark flex items-center justify-center flex-shrink-0">
+                <User className="w-4 h-4 text-text-secondary" />
+              </div>
+              <div
+                className={`max-w-[70%] p-3 rounded-xl ${
+                  message.sender_id === currentUser?.id
+                    ? 'bg-primary/20 ml-auto'
+                    : 'bg-white/5'
+                }`}
+              >
+                <p className="text-sm text-text-secondary">
+                  {message.sender?.name || 'Usuario'}
+                </p>
+                <p className="mt-1">{message.content}</p>
+                <p className="text-xs text-text-secondary mt-1">
+                  {new Date(message.created_at).toLocaleTimeString()}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
         <div ref={messagesEndRef} />
       </div>
 
