@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAuthStore } from '../../stores/authStore';
 import { useChatStore } from '../../stores/chatStore';
 import { chatService } from '../../lib/chat';
@@ -14,17 +14,26 @@ export function ChatRoom({ roomId, className = '' }: ChatRoomProps) {
   const currentUser = useAuthStore((state) => state.user);
   const messages = useChatStore((state) => state.messages[roomId] || []);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadMessages = async () => {
-      const messages = await chatService.getMessages(roomId);
-      useChatStore.getState().setMessages(roomId, messages.reverse());
+      try {
+        setIsLoading(true);
+        const messages = await chatService.getMessages(roomId);
+        useChatStore.getState().setMessages(roomId, messages);
+      } catch (error) {
+        console.error('Error loading messages:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadMessages();
+  }, [roomId]);
 
-    const subscription = chatService.subscribeToRoom(roomId, (payload) => {
-      const message = payload.new;
+  useEffect(() => {
+    const subscription = chatService.subscribeToRoom(roomId, (message) => {
       useChatStore.getState().addMessage(roomId, message);
     });
 
@@ -32,10 +41,13 @@ export function ChatRoom({ roomId, className = '' }: ChatRoomProps) {
       subscription.unsubscribe();
     };
   }, [roomId]);
-
+  
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages.length]);
+
 
   return (
     <div className={`flex flex-col ${className}`}>
@@ -47,6 +59,11 @@ export function ChatRoom({ roomId, className = '' }: ChatRoomProps) {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {isLoading && (
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        )}
         {messages.map((message) => (
           <div
             key={message.id}

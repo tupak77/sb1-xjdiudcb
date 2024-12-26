@@ -21,14 +21,7 @@ export const chatService = {
   async getMessages(roomId: string, limit = 50): Promise<ChatMessage[]> {
     const { data, error } = await supabase
       .from('chat_messages')
-      .select(`
-        *,
-        sender:sender_id (
-          id,
-          name,
-          avatar_url
-        )
-      `)
+      .select('*, sender:profiles!chat_messages_sender_id_fkey(id, name, avatar_url)')
       .eq('room_id', roomId)
       .order('created_at', { ascending: true })
       .limit(limit);
@@ -41,8 +34,8 @@ export const chatService = {
     return data || [];
   },
 
-  subscribeToRoom(roomId: string, callback: (payload: any) => void) {
-    return supabase
+  subscribeToRoom(roomId: string, onMessage: (message: ChatMessage) => void) {
+    const channel = supabase
       .channel(`room:${roomId}`)
       .on(
         'postgres_changes',
@@ -52,8 +45,27 @@ export const chatService = {
           table: 'chat_messages',
           filter: `room_id=eq.${roomId}`
         },
-        callback
+        (payload) => {
+          const newMessage = payload.new as ChatMessage;
+          if (newMessage.sender) {
+            onMessage(newMessage);
+          } else {
+            // Fetch complete message data if sender info is missing
+            supabase
+              .from('chat_messages')
+              .select('*, sender:profiles!chat_messages_sender_id_fkey(id, name, avatar_url)')
+              .eq('id', newMessage.id)
+              .single()
+              .then(({ data, error }) => {
+                if (!error && data) {
+                  onMessage(data);
+                }
+              });
+          }
+        }
       )
       .subscribe();
+      
+    return channel;
   }
 };

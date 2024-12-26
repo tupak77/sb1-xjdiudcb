@@ -12,7 +12,10 @@ export const useChatStore = create<ChatState>((set) => ({
     set((state) => ({
       messages: {
         ...state.messages,
-        [roomId]: [...(state.messages[roomId] || []), message]
+        [roomId]: [
+          ...(state.messages[roomId] || []).filter(m => m.id !== message.id),
+          message
+        ]
       }
     })),
   setRooms: (rooms: ChatRoom[]) => set({ rooms }),
