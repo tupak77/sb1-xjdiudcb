@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import { ChatLayout } from './components/chat/ChatLayout';
 import ProfilePage from './pages/ProfilePage';
 import './styles/background.css';
 
@@ -50,6 +51,11 @@ function App() {
               <Route path="/history" element={
                 <ProtectedRoute>
                   <HistoryPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/chat" element={
+                <ProtectedRoute>
+                  <ChatLayout />
                 </ProtectedRoute>
               } />
               <Route path="/profile" element={
