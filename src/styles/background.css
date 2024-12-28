@@ -5,13 +5,13 @@
 
 .geometric-shapes {
   @apply absolute inset-0;
-  filter: blur(4px);
+  @apply md:filter md:blur-[4px];
 }
 
 .shape {
   @apply absolute rounded-full opacity-20;
   background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--gold) 100%);
-  filter: blur(50px);
+  @apply md:filter md:blur-[50px];
   mix-blend-mode: soft-light;
   animation: morphShape 20s ease-in-out infinite;
 }
@@ -45,10 +45,10 @@
 .animated-grid {
   @apply absolute inset-0;
   background-size: 50px 50px;
-  background-image: 
-    linear-gradient(rgba(79, 70, 229, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79, 70, 229, 0.05) 1px, transparent 1px);
-  transform: perspective(1000px) rotateX(60deg) scale(2.5);
+  @apply hidden md:block;
+  background-image: linear-gradient(rgba(79, 70, 229, 0.05) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(79, 70, 229, 0.05) 1px, transparent 1px);
+  transform: perspective(1000px) rotateX(60deg) scale(1.5);
   transform-origin: center top;
   animation: gridFloat 20s ease-in-out infinite;
   opacity: 0.3;

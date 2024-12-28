@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { Send } from 'lucide-react';
 
 interface MessageInputProps {
   onSend: (content: string) => Promise<void>;
 }
 
-export function MessageInput({ onSend }: MessageInputProps) {
+export const MessageInput = memo(({ onSend }: MessageInputProps) => {
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedMessage = message.trim();
     if (!trimmedMessage || sending) return;
@@ -24,12 +24,12 @@ export function MessageInput({ onSend }: MessageInputProps) {
     } finally {
       setSending(false);
     }
-  };
+  }, [message, sending, onSend]);
 
   return (
     <form 
       onSubmit={handleSubmit} 
-      className="p-4 border-t border-white/10"
+      className="p-2 sm:p-4 border-t border-white/10"
     >
       <div className="flex gap-2">
         <input
@@ -38,12 +38,12 @@ export function MessageInput({ onSend }: MessageInputProps) {
           onChange={(e) => setMessage(e.target.value)}
           disabled={sending}
           placeholder="Escribe un mensaje..."
-          className="flex-1 bg-white/5 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+          className="flex-1 bg-white/5 rounded-xl px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-primary"
         />
         <button
           type="submit"
           disabled={sending || !message.trim()}
-          className={`p-2 rounded-xl bg-primary text-white transition-all duration-200
+          className={`p-2 rounded-xl bg-primary text-white transition-all duration-200 active:scale-95
             ${sending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'}`}
         >
           <Send className={`w-5 h-5 ${sending ? 'animate-pulse' : ''}`} />
@@ -51,4 +51,6 @@ export function MessageInput({ onSend }: MessageInputProps) {
       </div>
     </form>
   );
-}
+});
+
+export default MessageInput;

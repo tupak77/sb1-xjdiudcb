@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, User, LogOut } from 'lucide-react';
 import { navigationItems } from '../data/navigation';
@@ -8,11 +8,22 @@ import { useAuthStore } from '../stores/authStore';
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuthStore();
   
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <nav className="fixed w-full top-0 z-50 p-4 bg-neu-base shadow-lg">
+    <nav className={`fixed w-full top-0 z-50 p-4 transition-all duration-300 ${
+      isScrolled ? 'bg-neu-base/95 backdrop-blur-sm shadow-lg' : 'bg-neu-base'
+    }`}>
         <div className="container mx-auto flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold text-gold hover:scale-105 transition-transform">
             Formidable
