@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { FancyInput } from '../FancyInput';
-import { MedalSelection } from './MedalSelection';
 import type { Interaction } from '../../types';
 import '../../styles/modal.css';
 
@@ -20,7 +19,6 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
   const [targetUser, setTargetUser] = useState('');
   const [interactionType, setInteractionType] = useState<'lio' | 'chupachupa' | 'mandanga'>('lio');
   const [error, setError] = useState<string | null>(null);
-  const [selectedMedals, setSelectedMedals] = useState<string[]>([]);
   const [bonuses, setBonuses] = useState({
     raza: false,
     nationality: false,
@@ -54,14 +52,6 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
     return points;
   };
 
-  const handleMedalToggle = (medalId: string) => {
-    setSelectedMedals(prev => 
-      prev.includes(medalId) 
-        ? prev.filter(id => id !== medalId)
-        : [...prev, medalId]
-    );
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -70,13 +60,11 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
         type: interactionType,
         target_user: targetUser,
         points: calculatePoints(),
-        bonuses,
-        medals: selectedMedals
+        bonuses
       });
       setTargetUser('');
       setBonuses({ raza: false, nationality: false, goldButton: false });
       setInteractionType('lio');
-      setSelectedMedals([]);
     } catch (err) {
       const error = err as InteractionError;
       setError(error.message || 'Error al guardar la interacción');
@@ -84,19 +72,23 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 modal-overlay">
-      <div className="bg-neu-base p-6 rounded-2xl w-full max-w-md mx-4 modal-content">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 modal-overlay p-4">
+      <div className="bg-neu-base p-4 sm:p-6 rounded-2xl w-full max-w-md modal-content max-h-[90vh] overflow-y-auto relative">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold gradient-text">
             {editingInteraction ? 'Editar Interacción' : 'Nueva Interacción'}
           </h2>
-          <button onClick={onClose} className="text-text-secondary hover:text-text-primary">
+          <button 
+            onClick={onClose} 
+            className="text-text-secondary hover:text-text-primary p-2 rounded-full hover:bg-white/5 sticky"
+            aria-label="Cerrar"
+          >
             <X size={24} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
+          <div className="space-y-3 mt-2">
             <label className="block text-sm font-medium mb-2 text-text-secondary">
               Tipo de Interacción
             </label>
@@ -161,11 +153,6 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
               ))}
             </div>
           </div>
-
-          <MedalSelection
-            selectedMedals={selectedMedals}
-            onMedalToggle={handleMedalToggle}
-          />
 
           <div className="neu-pressed p-4 rounded-xl text-center">
             <div className="text-sm text-text-secondary">Puntos totales</div>

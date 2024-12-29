@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award, Globe, Calendar, Flame, Sun, Crown, Heart, Star, Baby, Briefcase, Globe2, Sparkles, Users, Camera, User, Coffee, Users2 } from 'lucide-react';
+import { Award, Globe, Calendar, Flame, Sun, Crown, Heart, Star, Baby, Briefcase, Globe2, Sparkles, Users, Camera, User, Coffee, Users2, Candy } from 'lucide-react';
 import type { MedalDisplay } from '../types';
 
 export const medals: MedalDisplay[] = [
@@ -110,5 +110,11 @@ export const medals: MedalDisplay[] = [
     name: 'Yoko Ono',
     description: 'Puntos con chicas de la misma familia',
     icon: <Users2 className="w-8 h-8" />
+  },
+  {
+    id: 'bruno-quiroga',
+    name: 'Bruno Quiroga',
+    description: 'Consigue un chupa chupa en la calle',
+    icon: <Candy className="w-8 h-8" />
   }
 ];

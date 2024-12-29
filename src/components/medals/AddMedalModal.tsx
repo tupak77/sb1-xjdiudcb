@@ -41,13 +41,17 @@ export function AddMedalModal({ isOpen, onClose, onSubmit }: AddMedalModalProps)
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 modal-overlay">
-      <div className="bg-neu-base p-6 rounded-2xl w-full max-w-md mx-4 modal-content">
-        <div className="flex justify-between items-center mb-6">
+      <div className="bg-neu-base p-4 sm:p-6 rounded-2xl w-full max-w-md modal-content max-h-[90vh] overflow-y-auto relative">
+        <div className="pr-12 mb-6">
           <h2 className="text-2xl font-bold gradient-text">Añadir Medalla</h2>
-          <button onClick={onClose} className="text-text-secondary hover:text-text-primary">
-            <X size={24} />
-          </button>
         </div>
+        <button 
+          onClick={onClose} 
+          className="modal-close-button"
+          aria-label="Cerrar"
+        >
+          <X size={20} className="text-text-secondary" />
+        </button>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <MedalSelection

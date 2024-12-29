@@ -50,17 +50,24 @@ export default function Navbar() {
             {user && (
               <div className="relative">
                 <button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="neu-button p-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsUserMenuOpen(!isUserMenuOpen);
+                  }}
+                  className="neu-button p-2 flex items-center gap-2"
                 >
                   <User size={20} />
+                  <span className="hidden md:inline">Perfil</span>
                 </button>
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 py-2 bg-neu-base rounded-xl shadow-xl neu-card">
+                  <div className="absolute right-0 mt-2 w-48 py-2 bg-neu-base rounded-xl shadow-xl neu-card z-50">
                     <Link
                       to="/profile"
-                      className="block px-4 py-2 text-sm hover:bg-primary/10"
-                      onClick={() => setIsUserMenuOpen(false)}
+                      className="block px-4 py-2 text-sm hover:bg-primary/10 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsUserMenuOpen(false);
+                      }}
                     >
                       Perfil
                     </Link>
@@ -69,7 +76,7 @@ export default function Navbar() {
                         signOut();
                         setIsUserMenuOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-500/10"
+                      className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 transition-colors"
                     >
                       Cerrar Sesión
                     </button>
@@ -97,7 +104,7 @@ export default function Navbar() {
         {/* Overlays */}
         {(isMobileMenuOpen || isUserMenuOpen) && (
           <div
-            className="fixed inset-0 bg-black/50 z-40"
+            className="fixed inset-0 bg-black/50 z-30"
             onClick={() => {
               setIsMobileMenuOpen(false);
               setIsUserMenuOpen(false);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Info, Medal, History, User, MessageSquare } from 'lucide-react';
+import { Home, Info, Medal, History, MessageSquare } from 'lucide-react';
 
 export const navigationItems = [
   {
@@ -26,10 +26,5 @@ export const navigationItems = [
     path: '/chat',
     label: 'Chat',
     icon: <MessageSquare size={20} />
-  },
-  {
-    path: '/profile',
-    label: 'Perfil',
-    icon: <User size={20} />
   }
 ];

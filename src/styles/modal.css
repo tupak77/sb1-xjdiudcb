@@ -41,10 +41,36 @@
 /* Modal Animation */
 .modal-overlay {
   animation: fadeIn 0.3s ease-out;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 .modal-content {
   animation: slideIn 0.3s ease-out;
+  position: relative;
+  margin: auto;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Close button styles */
+.modal-close-button {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background-color: var(--neu-base);
+  transition: all 0.2s;
+}
+
+.modal-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 @keyframes fadeIn {
