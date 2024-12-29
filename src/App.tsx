@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import InfoPage from './pages/InfoPage';
 import MedalsPage from './pages/MedalsPage';
 import HistoryPage from './pages/HistoryPage';
+import PredictionsPage from './pages/PredictionsPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -56,6 +57,11 @@ function App() {
               <Route path="/chat" element={
                 <ProtectedRoute>
                   <ChatLayout />
+                </ProtectedRoute>
+              } />
+              <Route path="/predictions" element={
+                <ProtectedRoute>
+                  <PredictionsPage />
                 </ProtectedRoute>
               } />
               <Route path="/profile" element={

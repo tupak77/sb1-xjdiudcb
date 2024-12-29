@@ -3,6 +3,7 @@ import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { BatmanButton } from '../components/BatmanButton';
 import { AddMedalModal } from '../components/medals/AddMedalModal';
+import { BoostButton } from '../components/interactions/BoostButton';
 import Leaderboard from '../components/Leaderboard';
 import { InteractionModal } from '../components/interactions/InteractionModal';
 import { LogOut, Trophy, Target, Award, Pencil, Medal } from 'lucide-react';
@@ -219,6 +220,7 @@ export default function HomePage() {
               Registrar Interacción
             </h2>
             <div className="flex justify-center">
+              <BoostButton onBoostActivated={fetchPoints} />
               <BatmanButton onClick={() => setIsModalOpen(true)}>
                 NUEVA INTERACCIÓN
               </BatmanButton>

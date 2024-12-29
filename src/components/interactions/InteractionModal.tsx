@@ -22,7 +22,12 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
   const [bonuses, setBonuses] = useState({
     raza: false,
     nationality: false,
-    goldButton: false
+    goldButton: false,
+    shiny: false,
+    milf: false,
+    casada: false,
+    dosPaDos: false,
+    boostBarney: false
   });
 
   useEffect(() => {
@@ -48,7 +53,12 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
     }
     if (bonuses.raza) points += 5;
     if (bonuses.nationality) points += 5;
+    if (bonuses.casada) points += 10;
     if (bonuses.goldButton) points *= 2;
+    if (bonuses.shiny) points *= 2;
+    if (bonuses.milf) points *= 2;
+    if (bonuses.dosPaDos) points *= 2;
+    if (bonuses.boostBarney) points *= 2;
     return points;
   };
 
@@ -133,7 +143,12 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
               {[
                 { key: 'raza', label: 'Raza', points: '+5' },
                 { key: 'nationality', label: 'Nacionalidad', points: '+5' },
-                { key: 'goldButton', label: 'Botón de Oro', points: 'x2' }
+                { key: 'goldButton', label: 'Botón de Oro', points: 'x2' },
+                { key: 'shiny', label: 'Shiny', points: 'x2' },
+                { key: 'milf', label: 'Milf', points: 'x2' },
+                { key: 'casada', label: 'Casada', points: '+10' },
+                { key: 'dosPaDos', label: '2 Pa 2', points: 'x2' },
+                { key: 'boostBarney', label: 'Boost Barney', points: 'x2' }
               ].map((bonus) => (
                 <button
                   key={bonus.key}

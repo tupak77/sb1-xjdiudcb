@@ -35,7 +35,7 @@ export default function HistoryPage() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('*, medals(id)')
         .order('points', { ascending: false });
 
       if (error) throw error;
@@ -53,8 +53,9 @@ export default function HistoryPage() {
         return acc;
       }, {} as Record<string, string>);
 
-      const profilesWithLastGame = data.map(profile => ({
+      const profilesWithLastGame = data.map((profile: any) => ({
         ...profile,
+        medals: profile.medals?.length || 0,
         lastGame: lastGames?.[profile.id] ? new Date(lastGames[profile.id]) : null
       }));
 
@@ -116,9 +117,9 @@ export default function HistoryPage() {
       <div className="max-w-4xl mx-auto">
         <div className="neu-card space-y-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h1 className="text-3xl font-bold gradient-text flex items-center gap-2">
+            <h1 className="text-2xl font-bold gradient-text flex items-center gap-2">
               <Trophy className="text-gold" />
-              Ranking Global
+              Clasificación Global
             </h1>
             <div className="w-full md:w-64">
               <FancyInput
@@ -138,7 +139,7 @@ export default function HistoryPage() {
                   <th className="py-4 px-2 text-left">#</th>
                   <th className="py-4 px-2 text-left">Usuario</th>
                   <th className="py-4 px-2 text-center">Puntos</th>
-                  <th className="py-4 px-2 text-center hidden md:table-cell">Medallas</th>
+                  <th className="py-4 px-2 text-center">Medallas</th>
                   <th className="py-4 px-2 text-right hidden md:table-cell">Último juego</th>
                 </tr>
               </thead>
@@ -182,11 +183,11 @@ export default function HistoryPage() {
                           {profile.points}
                         </span>
                       </td>
-                      <td className="py-4 px-2 text-center hidden md:table-cell">
+                      <td className="py-4 px-2 text-center">
                         <div className="flex justify-center gap-1">
                           <Medal size={16} className="text-gold" />
                           <span className="text-text-secondary">
-                            {profile.medals?.length || 0}
+                            {profile.medals || 0}
                           </span>
                         </div>
                       </td>

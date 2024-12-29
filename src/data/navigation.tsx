@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Info, Medal, History, MessageSquare } from 'lucide-react';
+import { Home, Info, Medal, Trophy, MessageSquare, Sparkles } from 'lucide-react';
 
 export const navigationItems = [
   {
@@ -19,12 +19,17 @@ export const navigationItems = [
   },
   {
     path: '/history',
-    label: 'Historial',
-    icon: <History size={20} />
+    label: 'Ranking',
+    icon: <Trophy size={20} />
   },
   {
     path: '/chat',
     label: 'Chat',
     icon: <MessageSquare size={20} />
+  },
+  {
+    path: '/predictions',
+    label: 'Predicciones',
+    icon: <Sparkles size={20} />
   }
 ];

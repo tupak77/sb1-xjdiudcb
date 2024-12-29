@@ -4,33 +4,48 @@ import { useChatStore } from '../../stores/chatStore';
 import { chatService } from '../../lib/chat';
 import MessageInput from './MessageInput';
 import { User, Users } from 'lucide-react';
+import { medals as medalsList } from '../../data/medals';
 
-const ChatMessage = memo(({ message, isOwnMessage, currentUser }) => (
-  <div
-    className={`flex gap-3 ${
-      isOwnMessage ? 'flex-row-reverse' : ''
-    }`}
-  >
-    <div className="w-8 h-8 rounded-full bg-neu-dark flex items-center justify-center flex-shrink-0">
-      <User className="w-4 h-4 text-text-secondary" />
-    </div>
+const ChatMessage = memo(({ message, isOwnMessage, currentUser }) => {
+  const lastMedal = message.sender?.medals?.sort((a, b) => 
+    new Date(b.unlocked_at).getTime() - new Date(a.unlocked_at).getTime()
+  )[0];
+
+  const medalInfo = lastMedal ? medalsList.find(m => m.id === lastMedal.medal_id) : null;
+
+  return (
     <div
-      className={`max-w-[70%] p-3 rounded-xl ${
-        isOwnMessage
-          ? 'bg-primary/20 ml-auto'
-          : 'bg-white/5'
+      className={`flex gap-3 ${
+        isOwnMessage ? 'flex-row-reverse' : ''
       }`}
     >
-      <p className="text-sm text-text-secondary">
-        {message.sender?.name || 'Usuario'}
-      </p>
-      <p className="mt-1">{message.content}</p>
-      <p className="text-xs text-text-secondary mt-1">
-        {new Date(message.created_at).toLocaleTimeString()}
-      </p>
+      <div className="w-8 h-8 rounded-full bg-neu-dark flex items-center justify-center flex-shrink-0">
+        <User className="w-4 h-4 text-text-secondary" />
+      </div>
+      <div
+        className={`max-w-[70%] p-3 rounded-xl ${
+          isOwnMessage
+            ? 'bg-primary/20 ml-auto'
+            : 'bg-white/5'
+        }`}
+      >
+        <div className="text-sm text-text-secondary">
+          <span className="font-semibold">{message.sender?.name || 'Usuario'}</span>
+        </div>
+        {medalInfo && (
+          <div className="flex items-center gap-1 mt-1 text-xs">
+            <span className="text-gold">{medalInfo.icon}</span>
+            <span className="text-text-secondary">{medalInfo.name}</span>
+          </div>
+        )}
+        <p className="mt-1">{message.content}</p>
+        <p className="text-xs text-text-secondary mt-1">
+          {new Date(message.created_at).toLocaleTimeString()}
+        </p>
+      </div>
     </div>
-  </div>
-));
+  );
+});
 
 interface ChatRoomProps {
   roomId: string;
@@ -40,6 +55,8 @@ interface ChatRoomProps {
 export function ChatRoom({ roomId, className = '' }: ChatRoomProps) {
   const currentUser = useAuthStore((state) => state.user);
   const messages = useChatStore((state) => state.messages[roomId] || []);
+  const addMessage = useChatStore((state) => state.addMessage);
+  const setMessages = useChatStore((state) => state.setMessages);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAtBottom, setIsAtBottom] = useState(true);
@@ -62,11 +79,11 @@ export function ChatRoom({ roomId, className = '' }: ChatRoomProps) {
       try {
         setIsLoading(true);
         const messages = await chatService.getMessages(roomId);
-        useChatStore.getState().setMessages(roomId, messages);
+        setMessages(roomId, messages);
         
         // Subscribe to new messages
         subscription = chatService.subscribeToRoom(roomId, (message) => {
-          useChatStore.getState().addMessage(roomId, message);
+          addMessage(roomId, message);
         });
       } catch (error) {
         console.error('Error initializing chat:', error);
@@ -78,11 +95,9 @@ export function ChatRoom({ roomId, className = '' }: ChatRoomProps) {
     initializeChat();
 
     return () => {
-      if (subscription) {
-        subscription.unsubscribe();
-      }
+      subscription?.unsubscribe();
     };
-  }, [roomId]);
+  }, [roomId, addMessage, setMessages]);
   
   useEffect(() => {
     scrollToBottom();
@@ -118,7 +133,11 @@ export function ChatRoom({ roomId, className = '' }: ChatRoomProps) {
       <MessageInput
         onSend={async (content) => {
           if (!currentUser) return;
-          await chatService.sendMessage(roomId, currentUser.id, content);
+          try {
+            await chatService.sendMessage(roomId, currentUser.id, content);
+          } catch (error) {
+            console.error('Error sending message:', error);
+          }
         }}
       />
     </div>
