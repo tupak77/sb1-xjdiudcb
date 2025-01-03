@@ -39,7 +39,7 @@ export function RankingCountdown() {
         </div>
         
         <h2 className="text-2xl font-bold gradient-text">
-          El ranking comenzará el 1 de abril de 2025
+          El Formidable se reseteará el 1 de abril de 2025
         </h2>
         
         <div className="grid grid-cols-4 gap-4">
@@ -59,7 +59,7 @@ export function RankingCountdown() {
         </div>
 
         <p className="text-text-secondary">
-          ¡Prepárate para comenzar la competición!
+          ¡Prepárate para el nuevo comienzo!
         </p>
       </div>
     </div>
