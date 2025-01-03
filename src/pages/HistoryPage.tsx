@@ -3,6 +3,7 @@ import { Trophy, Search, Medal, Calendar, User } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
 import { FancyInput } from '../components/FancyInput';
+import { RankingCountdown } from '../components/RankingCountdown';
 import type { Profile } from '../types';
 
 const ITEMS_PER_PAGE = 10;
@@ -114,6 +115,7 @@ export default function HistoryPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <RankingCountdown />
       <div className="max-w-4xl mx-auto">
         <div className="neu-card space-y-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
