@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { FancyInput } from '../FancyInput';
+import { MedalSelection } from '../interactions/MedalSelection';
 import type { Interaction } from '../../types';
 import '../../styles/modal.css';
+import '../../styles/confetti.css';
 
 interface InteractionError {
   message: string;
@@ -19,6 +21,7 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
   const [targetUser, setTargetUser] = useState('');
   const [interactionType, setInteractionType] = useState<'lio' | 'chupachupa' | 'mandanga'>('lio');
   const [error, setError] = useState<string | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [bonuses, setBonuses] = useState({
     raza: false,
     nationality: false,
@@ -62,6 +65,14 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
     return points;
   };
 
+  const handleGoldButtonClick = () => {
+    setBonuses(prev => ({ ...prev, goldButton: !prev.goldButton }));
+    if (!bonuses.goldButton) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 4000);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -84,6 +95,18 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 modal-overlay p-4">
       <div className="bg-neu-base p-4 sm:p-6 rounded-2xl w-full max-w-md modal-content max-h-[90vh] overflow-y-auto relative">
+        {showConfetti && (
+          <div className="confetti-container">
+            {[...Array(50)].map((_, i) => (
+              <div key={i} className="confetti" style={{
+                '--delay': `${Math.random() * 3}s`,
+                '--rotation': `${Math.random() * 360}deg`,
+                '--position': `${Math.random() * 100}%`,
+              } as React.CSSProperties} />
+            ))}
+          </div>
+        )}
+        
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold gradient-text">
             {editingInteraction ? 'Editar Interacción' : 'Nueva Interacción'}
@@ -143,10 +166,9 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
               {[
                 { key: 'raza', label: 'Raza', points: '+5' },
                 { key: 'nationality', label: 'Nacionalidad', points: '+5' },
-                { key: 'goldButton', label: 'Botón de Oro', points: 'x2' },
+                { key: 'casada', label: 'Casada', points: '+10' },
                 { key: 'shiny', label: 'Shiny', points: 'x2' },
                 { key: 'milf', label: 'Milf', points: 'x2' },
-                { key: 'casada', label: 'Casada', points: '+10' },
                 { key: 'dosPaDos', label: '2 Pa 2', points: 'x2' },
                 { key: 'boostBarney', label: 'Boost Barney', points: 'x2' }
               ].map((bonus) => (
@@ -166,6 +188,18 @@ export function InteractionModal({ isOpen, onClose, onSubmit, editingInteraction
                   <div className="text-xs text-text-secondary">{bonus.points}</div>
                 </button>
               ))}
+              <button
+                type="button"
+                onClick={handleGoldButtonClick}
+                className={`p-3 rounded-xl text-center transition-all duration-300 relative overflow-hidden
+                  ${bonuses.goldButton
+                    ? 'gold-button-active'
+                    : 'gold-button'}`}
+              >
+                <div className="text-sm font-semibold">Botón de Oro</div>
+                <div className="text-xs text-text-secondary">x2</div>
+                <div className="gold-button-glow" />
+              </button>
             </div>
           </div>
 

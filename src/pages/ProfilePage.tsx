@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { supabase } from '../lib/supabase';
-import { User, Trophy, Calendar, Star } from 'lucide-react';
+import { User, Trophy, Calendar, Star, Pencil, Check, X } from 'lucide-react';
 import { UserMedals } from '../components/medals/UserMedals';
+import { FancyInput } from '../components/FancyInput';
 import type { Medal } from '../types';
 import { medals as availableMedals } from '../data/medals';
 
@@ -10,11 +11,16 @@ export default function ProfilePage() {
   const { user } = useAuthStore();
   const [points, setPoints] = useState(0);
   const [userMedals, setUserMedals] = useState<Medal[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (user) {
       fetchPoints();
       fetchMedals();
+      setNewName(user.user_metadata.name || '');
     }
   }, [user?.id]);
 
@@ -63,6 +69,35 @@ export default function ProfilePage() {
     setPoints(data?.points || 0);
   };
 
+  const handleUpdateName = async () => {
+    if (!user || !newName.trim() || isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+      setError(null);
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ name: newName.trim() })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      // Update user metadata
+      const { error: metadataError } = await supabase.auth.updateUser({
+        data: { name: newName.trim() }
+      });
+
+      if (metadataError) throw metadataError;
+
+      setIsEditing(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al actualizar el nombre');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (!user) {
     return null;
   }
@@ -77,10 +112,52 @@ export default function ProfilePage() {
                 <User className="w-8 h-8 text-gold" />
               </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold gradient-text">
-                {user.user_metadata.name || 'Usuario'}
-              </h1>
+            <div className="flex-1">
+              {isEditing ? (
+                <div className="space-y-2">
+                  <FancyInput
+                    type="text"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Tu nombre"
+                    className="w-full"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleUpdateName}
+                      disabled={isSubmitting}
+                      className="neu-button text-green-500 hover:text-green-400"
+                    >
+                      <Check size={20} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsEditing(false);
+                        setNewName(user.user_metadata.name || '');
+                        setError(null);
+                      }}
+                      className="neu-button text-red-500 hover:text-red-400"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                  {error && (
+                    <p className="text-sm text-red-500">{error}</p>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-bold gradient-text">
+                    {user.user_metadata.name || 'Usuario'}
+                  </h1>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="p-2 rounded-full hover:bg-white/5 transition-colors"
+                  >
+                    <Pencil size={16} className="text-text-secondary" />
+                  </button>
+                </div>
+              )}
               <p className="text-text-secondary">{user.email}</p>
             </div>
           </div>

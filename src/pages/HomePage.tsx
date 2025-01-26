@@ -6,7 +6,7 @@ import { AddMedalModal } from '../components/medals/AddMedalModal';
 import { BoostButton } from '../components/interactions/BoostButton';
 import Leaderboard from '../components/Leaderboard';
 import { InteractionModal } from '../components/interactions/InteractionModal';
-import { LogOut, Trophy, Target, Award, Pencil, Medal } from 'lucide-react';
+import { LogOut, Trophy, Target, Award, Pencil, Medal, Trash2 } from 'lucide-react';
 import type { Interaction } from '../types';
 import '../styles/batman-button.css';
 
@@ -16,6 +16,7 @@ export default function HomePage() {
   const [editingInteraction, setEditingInteraction] = useState<any>(null);
   const [interactions, setInteractions] = useState<any[]>([]);
   const [points, setPoints] = useState<number>(0);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -121,6 +122,34 @@ export default function HomePage() {
     }
   };
 
+  const handleDeleteInteraction = async (interactionId: string) => {
+    if (!user || isDeleting) return;
+
+    if (!confirm('¿Estás seguro de que quieres eliminar esta interacción?')) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      const { error } = await supabase
+        .from('interactions')
+        .delete()
+        .eq('id', interactionId);
+
+      if (error) throw error;
+
+      await Promise.all([
+        fetchInteractions(),
+        fetchPoints()
+      ]);
+    } catch (error) {
+      console.error('Error deleting interaction:', error);
+      alert('Error al eliminar la interacción');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleAddMedal = async (medalData: { medalId: string; date: string; description: string }) => {
     if (!user) return;
 
@@ -173,9 +202,9 @@ export default function HomePage() {
           <div className="neu-card space-y-6">
             <h2 className="text-2xl font-bold gradient-text flex items-center gap-2">
               <Trophy className="text-gold" />
-              Historial de Interacciones
+              My Formidable Points
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
               {interactions.map((interaction) => (
                 <div key={interaction.id} className="neu-element p-4">
                   <div className="flex justify-between items-center group">
@@ -186,15 +215,26 @@ export default function HomePage() {
                       </p>
                     </div>
                     <div className="text-right flex items-center gap-4">
-                      <button
-                        onClick={() => {
-                          setEditingInteraction(interaction);
-                          setIsModalOpen(true);
-                        }}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity text-text-secondary hover:text-primary"
-                      >
-                        <Pencil size={16} />
-                      </button>
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                        <button
+                          onClick={() => {
+                            setEditingInteraction(interaction);
+                            setIsModalOpen(true);
+                          }}
+                          className="text-text-secondary hover:text-primary transition-colors"
+                          title="Editar"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteInteraction(interaction.id)}
+                          className="text-text-secondary hover:text-red-500 transition-colors"
+                          title="Eliminar"
+                          disabled={isDeleting}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                       <p className="text-lg font-bold text-gold">
                         {interaction.points} pts
                       </p>
@@ -254,7 +294,10 @@ export default function HomePage() {
 
       <InteractionModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingInteraction(null);
+        }}
         onSubmit={editingInteraction ? handleEditInteraction : handleNewInteraction}
         editingInteraction={editingInteraction}
       />

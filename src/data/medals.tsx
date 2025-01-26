@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award, Globe, Calendar, Flame, Sun, Crown, Heart, Star, Baby, Briefcase, Globe2, Sparkles, Users, Camera, User, Coffee, Users2, Candy } from 'lucide-react';
+import { Award, Globe, Calendar, Flame, Sun, Crown, Heart, Star, Baby, Briefcase, Globe2, Sparkles, Users, Camera, User, Coffee, Users2, Candy, Armchair as Wheelchair, PartyPopper, Church, Skull, Flag, BellRing as Ring, Scale, Plane, UserX } from 'lucide-react';
 import type { MedalDisplay } from '../types';
 
 export const medals: MedalDisplay[] = [
@@ -116,5 +116,59 @@ export const medals: MedalDisplay[] = [
     name: 'Bruno Quiroga',
     description: 'Consigue un chupa chupa en la calle',
     icon: <Candy className="w-8 h-8" />
+  },
+  {
+    id: 'bebe-vio',
+    name: 'Bebe Vio o Frida Kahlo',
+    description: 'Que pueda aparcar en un parking de discapacitados',
+    icon: <Wheelchair className="w-8 h-8" />
+  },
+  {
+    id: 'maricon-oro',
+    name: 'Maricón de Oro',
+    description: 'Puntos en una fiesta gay',
+    icon: <PartyPopper className="w-8 h-8" />
+  },
+  {
+    id: 'virgen-guadalupe',
+    name: 'La Virgen de Guadalupe',
+    description: 'Puntos con alguien que diga que es virgen',
+    icon: <Church className="w-8 h-8" />
+  },
+  {
+    id: 'trio-mal',
+    name: 'Trío del Mal',
+    description: 'Puntos con 3 chicas diferentes en la misma semana',
+    icon: <Skull className="w-8 h-8" />
+  },
+  {
+    id: 'fifa-ultimate',
+    name: 'FIFA Ultimate',
+    description: 'Puntos con chicas de dos nacionalidades distintas en la misma noche',
+    icon: <Flag className="w-8 h-8" />
+  },
+  {
+    id: 'concha-viuda',
+    name: 'Concha la Viuda',
+    description: 'Puntos con alguien que enviudó',
+    icon: <Ring className="w-8 h-8" />
+  },
+  {
+    id: 'comisario',
+    name: 'El Comisario',
+    description: 'Puntos con alguien del ámbito legal: abogada, jueza o policía',
+    icon: <Scale className="w-8 h-8" />
+  },
+  {
+    id: 'modo-avion',
+    name: 'Modo Avión',
+    description: 'Consigue puntos sin usar apps de mensajería. Solo permitido el correo electrónico o sms',
+    icon: <Plane className="w-8 h-8" />
+  },
+  {
+    id: 'cebo-perfecto',
+    name: 'El Cebo Perfecto',
+    description: 'Consigue puntos fingiendo ser otra persona',
+    icon: <UserX className="w-8 h-8" />
   }
 ];
