@@ -1,6 +1,7 @@
 import React from 'react';
-import { Medal as MedalIcon, Trophy, Star } from 'lucide-react';
+import { Medal as MedalIcon, Trophy, Star, Trash2 } from 'lucide-react';
 import { medals } from '../../data/medals';
+import { supabase } from '../../lib/supabase';
 import type { Medal } from '../../types';
 
 interface UserMedalsProps {
@@ -12,6 +13,25 @@ export function UserMedals({ userMedals, onUpdate }: UserMedalsProps) {
   const totalMedals = medals.length;
   const unlockedMedals = userMedals.length;
   const progress = (unlockedMedals / totalMedals) * 100;
+
+  const handleDeleteMedal = async (medalId: string) => {
+    if (!confirm('¿Estás seguro de que quieres eliminar esta medalla?')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('medals')
+        .delete()
+        .eq('medal_id', medalId);
+
+      if (error) throw error;
+      onUpdate?.();
+    } catch (error) {
+      console.error('Error deleting medal:', error);
+      alert('Error al eliminar la medalla');
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -70,6 +90,22 @@ export function UserMedals({ userMedals, onUpdate }: UserMedalsProps) {
               `}>
                 <p className="text-white font-bold">¡Desbloqueada!</p>
               </div>
+              
+              {isUnlocked && (
+                <div className="absolute top-2 right-2 flex gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteMedal(medal.id);
+                    }}
+                    className="p-1 rounded-full hover:bg-red-500/10 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Eliminar medalla"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <Star className="w-4 h-4 text-gold" fill="currentColor" />
+                </div>
+              )}
             </div>
           );
         })}
